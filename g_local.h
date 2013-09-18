@@ -1095,5 +1095,6 @@ struct edict_s
 	
 	// Rocket counter
 	int rocketGen;
+	int rocketspeed;
 };
 

@@ -698,11 +698,19 @@ void SV_Physics_Toss (edict_t *ent)
 	if (trace.fraction < 1)
 	{
 		if (ent->movetype == MOVETYPE_BOUNCE)
-			backoff = 1.5;
+			//ORIG
+			//backoff = 1.5;
+			backoff = 1.8;
 		else
 			backoff = 1;
 
 		ClipVelocity (ent->velocity, trace.plane.normal, ent->velocity, backoff);
+		 // ADDED
+		 if (ent->movetype == MOVETYPE_BOUNCE)
+         {
+			vectoangles (ent->velocity, ent->s.angles);
+		 }
+		// end addition
 
 	// stop if on ground
 		if (trace.plane.normal[2] > 0.7)
