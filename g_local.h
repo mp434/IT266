@@ -1092,7 +1092,8 @@ struct edict_s
 	moveinfo_t		moveinfo;
 	monsterinfo_t	monsterinfo;
 
-	//Rocket counter
-	//int rocketGen;
+	
+	// Rocket counter
+	int rocketGen;
 };
 
