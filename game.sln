@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Desktop
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "game", "game.vcxproj", "{496D99F8-CF60-436D-BE60-5F473C657321}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Alpha|Win32 = Debug Alpha|Win32
+		Debug|Win32 = Debug|Win32
+		Release Alpha|Win32 = Release Alpha|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{496D99F8-CF60-436D-BE60-5F473C657321}.Debug Alpha|Win32.ActiveCfg = Debug Alpha|Win32
+		{496D99F8-CF60-436D-BE60-5F473C657321}.Debug Alpha|Win32.Build.0 = Debug Alpha|Win32
+		{496D99F8-CF60-436D-BE60-5F473C657321}.Debug|Win32.ActiveCfg = Debug|Win32
+		{496D99F8-CF60-436D-BE60-5F473C657321}.Debug|Win32.Build.0 = Debug|Win32
+		{496D99F8-CF60-436D-BE60-5F473C657321}.Release Alpha|Win32.ActiveCfg = Release Alpha|Win32
+		{496D99F8-CF60-436D-BE60-5F473C657321}.Release Alpha|Win32.Build.0 = Release Alpha|Win32
+		{496D99F8-CF60-436D-BE60-5F473C657321}.Release|Win32.ActiveCfg = Release|Win32
+		{496D99F8-CF60-436D-BE60-5F473C657321}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
