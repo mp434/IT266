@@ -557,19 +557,16 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 
 	if (surf && (surf->flags & SURF_SKY))
 	{
-		//G_FreeEdict drops the pointer
 		G_FreeEdict (ent);
 		return;
 	}
 
-	// checks if it is a player as palyers are clients.
 	if (ent->owner->client)
 		PlayerNoise(ent->owner, ent->s.origin, PNOISE_IMPACT);
 
 	// calculate position for the explosion entity
 	VectorMA (ent->s.origin, -0.02, ent->velocity, origin);
 
-	//This upon explosion checks to see if anyone is in range to do dmg.
 	if (other->takedamage)
 	{
 		T_Damage (other, ent, ent->owner, ent->velocity, ent->s.origin, plane->normal, ent->dmg, 0, 0, MOD_ROCKET);
@@ -598,40 +595,33 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 	gi.WritePosition (origin);
 	gi.multicast (ent->s.origin, MULTICAST_PHS);
 
-	//rockets make more rockets
-	/*
-	fire_rocket (ent, start, forward, damage, 650, damage_radius, radius_damage);
-	*/
-	//The rocket has exploded and it frees the memory.
+	// rockets make rockets
+	if (ent->owner->client)
+	{
+		fire_rocket (ent, ent->s.origin, plane->normal, 100, 650, 120, 120);
+	}
 	G_FreeEdict (ent);
 }
 
 void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
 {
-	//declaring new pointer towards a rocket
 	edict_t	*rocket;
 
-	//this line asks engine for empty entity.
 	rocket = G_Spawn();
 	VectorCopy (start, rocket->s.origin);
 	VectorCopy (dir, rocket->movedir);
 	vectoangles (dir, rocket->s.angles);
-	//unit vector
 	VectorScale (dir, speed, rocket->velocity);
-	//move type so it does not apply gravity.
 	rocket->movetype = MOVETYPE_FLYMISSILE;
 	rocket->clipmask = MASK_SHOT;
 	rocket->solid = SOLID_BBOX;
 	rocket->s.effects |= EF_ROCKET;
-	//vector bounding box
 	VectorClear (rocket->mins);
 	VectorClear (rocket->maxs);
 	rocket->s.modelindex = gi.modelindex ("models/objects/rocket/tris.md2");
 	rocket->owner = self;
-	//defining a rocket pointer
 	rocket->touch = rocket_touch;
 	rocket->nextthink = level.time + 8000/speed;
-
 	rocket->think = G_FreeEdict;
 	rocket->dmg = damage;
 	rocket->radius_dmg = radius_damage;
@@ -639,27 +629,8 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	rocket->s.sound = gi.soundindex ("weapons/rockfly.wav");
 	rocket->classname = "rocket";
 
-	// This loops through enemies and sees if enemies should dodge.
-	/*
-	if(self->client)
-	{
-		rocket->rocketGen - 8;
-	}
-	else if(self->rocketGen > 0) 
-	{	
-		rocket->rocketGen = (self->rocketGen -1);
-
-	}
-	else
-	{
-	 rocket->rocketGen = 0;
-	}
-	*/
-
 	if (self->client)
 		check_dodge (self, rocket->s.origin, dir, speed);
-
-	//physics engine that handles collision detection.
 
 	gi.linkentity (rocket);
 }
