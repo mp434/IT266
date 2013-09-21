@@ -1,3 +1,8 @@
 *.XML
 *.htm
 */
+*.dsp
+*.plg
+*.sdf
+*.suo
+*.vcxproj*
