@@ -597,6 +597,12 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 
 	G_FreeEdict (ent);
 }
+//instead of freeing the rocket's memory at think, make it home in one someone
+void hominging_think (edict_t *ent)
+{
+	edict_t *target = NULL;
+	edict_t *
+}
 
 void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
 {
