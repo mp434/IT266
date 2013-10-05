@@ -597,11 +597,38 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 
 	G_FreeEdict (ent);
 }
-//instead of freeing the rocket's memory at think, make it home in one someone
+//instead of freeing the rocket's memory at think, make it home in on someone
 void hominging_think (edict_t *ent)
 {
+	edict_t *finding_target = NULL; //loop through the 1024 objects in existence for a player
 	edict_t *target = NULL;
-	edict_t *
+	vec3_t	direction_of_target;
+
+	//find target within a full circle's vision 2pi = 6.2
+	while ((finding_target = findradius(finding_target,ent->s.origin, 6.5))!=NULL) 
+	{
+		if(finding_target = ent->owner)
+			continue;
+		if(!finding_target->takedamage)
+			continue;
+		if(finding_target->health <= 0)
+			continue;
+		if(!infront(ent,finding_target))
+			continue;
+		
+		VectorSubtract(finding_target->s.origin,ent->s.origin,direction_of_target);
+		if(target == NULL) 
+		{
+			target = finding_target;
+			break;
+		}
+	}
+	if(target != NULL) //now that we have a target we need to make ent move toward it
+	{
+		VectorCopy(direction_of_target,ent->movedir);
+	}
+
+	ent->nextthink = level.time + .5;
 }
 
 void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
@@ -623,10 +650,10 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	rocket->owner = self;
 	rocket->touch = rocket_touch;
 	rocket->nextthink = level.time + 8000/speed;
-	rocket->think = G_FreeEdict;
+	rocket->think = hominging_think;
 	rocket->dmg = damage;
-	rocket->radius_dmg = 1000*radius_damage;
-	rocket->dmg_radius = 1000*damage_radius;
+	rocket->radius_dmg = radius_damage;
+	rocket->dmg_radius = damage_radius;
 	rocket->s.sound = gi.soundindex ("weapons/rockfly.wav");
 	rocket->classname = "rocket";
 
