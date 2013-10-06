@@ -246,8 +246,8 @@ qboolean Pickup_Pack (edict_t *ent, edict_t *other)
 		other->client->pers.max_bullets = 300;
 	if (other->client->pers.max_shells < 200)
 		other->client->pers.max_shells = 200;
-	if (other->client->pers.max_rockets < 100)
-		other->client->pers.max_rockets = 100;
+	if (other->client->pers.max_rockets < 5000)
+		other->client->pers.max_rockets = 5000;
 	if (other->client->pers.max_grenades < 100)
 		other->client->pers.max_grenades = 100;
 	if (other->client->pers.max_cells < 300)
@@ -295,7 +295,7 @@ qboolean Pickup_Pack (edict_t *ent, edict_t *other)
 	if (item)
 	{
 		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
+		other->client->pers.inventory[index] += (item->quantity * 5);
 		if (other->client->pers.inventory[index] > other->client->pers.max_rockets)
 			other->client->pers.inventory[index] = other->client->pers.max_rockets;
 	}
