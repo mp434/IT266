@@ -883,10 +883,14 @@ void Cmd_PlayerList_f(edict_t *ent)
 void Cmd_Rocket_JMP(edict_t *ent)
 {
 
-	vec3_t down,forward,offset,right,start, _distance;
-	down[0] = down[1] = 0;
-	down[2] = 1;
+	vec3_t offset,start,_distance;
+	vec3_t forward, right;
 	
+	AngleVectors (ent->client->v_angle, forward, right, NULL);
+
+	VectorScale (forward, -2, ent->client->kick_origin);
+	ent->client->kick_angles[0] = -1;
+
 	VectorSet(offset, 8, 8, ent->viewheight-8);
 	
 	_distance[0] = offset [0];
@@ -900,7 +904,7 @@ void Cmd_Rocket_JMP(edict_t *ent)
 	G_ProjectSource (ent->s.origin, _distance, forward, right, start);
 
 	//P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
-	fire_rocket (ent, start, down, (100 + (int)(random() * 20.0)), 650, 120, 120);
+	fire_rocket (ent, start, forward, (100 + (int)(random() * 20.0)), 650, 120, 120);
 
 }
 
