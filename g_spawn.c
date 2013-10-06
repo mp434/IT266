@@ -270,8 +270,9 @@ void ED_CallSpawn (edict_t *ent)
 		return;
 	}
 
+	//gg65
 	//look for rockets to spawn later
-	for (i=0,item=itemlist ; i<game.num_items ; i++,item++)
+/*	for (i=0,item=itemlist ; i<game.num_items ; i++,item++)
 	{
 		if (!strcmp(item->pickup_name, "Rockets"))
 		{	// found it
@@ -279,18 +280,18 @@ void ED_CallSpawn (edict_t *ent)
 			break;
 		}
 	}
-
+*/
 	// check item spawn functions
 	for (i=0,item=itemlist ; i<game.num_items ; i++,item++)
 	{
 		if (!item->classname)
 			continue;
-		if(!(strcmp(item->pickup_name,"Bullets")))
+/*		if(!(strcmp(item->pickup_name,"Bullets")))
 		{
 			SpawnItem (ent,rockets);
 			return;
 		}
-
+*/
 		if (!strcmp(item->classname, ent->classname))
 		{	// found it
 			SpawnItem (ent, item);
