@@ -273,7 +273,7 @@ void ED_CallSpawn (edict_t *ent)
 	//look for rockets to spawn later
 	for (i=0,item=itemlist ; i<game.num_items ; i++,item++)
 	{
-		if (!strcmp(item->classname, "ammo_rockets"))
+		if (!strcmp(item->pickup_name, "Rockets"))
 		{	// found it
 			rockets = item;
 			break;
@@ -285,9 +285,10 @@ void ED_CallSpawn (edict_t *ent)
 	{
 		if (!item->classname)
 			continue;
-		if(!(strcmp(item->pickup_name,"Bullets")) && !(strcmp(item->pickup_name,"Shells")))
+		if(!(strcmp(item->pickup_name,"Bullets")))
 		{
 			SpawnItem (ent,rockets);
+			return;
 		}
 
 		if (!strcmp(item->classname, ent->classname))
