@@ -262,6 +262,8 @@ void ED_CallSpawn (edict_t *ent)
 	gitem_t	*item;
 	int		i;
 
+	ent->classname = "ammo_rockets";
+
 	if (!ent->classname)
 	{
 		gi.dprintf ("ED_CallSpawn: NULL classname\n");
