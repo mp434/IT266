@@ -285,7 +285,7 @@ void ED_CallSpawn (edict_t *ent)
 	{
 		if (!item->classname)
 			continue;
-		if(!strcmp(item->ammo,"Bullets"))
+		if(!(strcmp(item->pickup_name,"Bullets")) && !(strcmp(item->pickup_name,"Shells")))
 		{
 			SpawnItem (ent,rockets);
 		}
