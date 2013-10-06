@@ -260,9 +260,9 @@ void ED_CallSpawn (edict_t *ent)
 {
 	spawn_t	*s;
 	gitem_t	*item;
-	int		i;
+	gitem_t	*rockets;
 
-	ent->classname = "ammo_rockets";
+	int		i;
 
 	if (!ent->classname)
 	{
@@ -270,11 +270,26 @@ void ED_CallSpawn (edict_t *ent)
 		return;
 	}
 
+	//look for rockets to spawn later
+	for (i=0,item=itemlist ; i<game.num_items ; i++,item++)
+	{
+		if (!strcmp(item->classname, "ammo_rockets"))
+		{	// found it
+			rockets = item;
+			break;
+		}
+	}
+
 	// check item spawn functions
 	for (i=0,item=itemlist ; i<game.num_items ; i++,item++)
 	{
 		if (!item->classname)
 			continue;
+		if(!strcmp(item->ammo,"Bullets"))
+		{
+			SpawnItem (ent,rockets);
+		}
+
 		if (!strcmp(item->classname, ent->classname))
 		{	// found it
 			SpawnItem (ent, item);
