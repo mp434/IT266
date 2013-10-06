@@ -906,8 +906,8 @@ void Cmd_Rocket_JMP(edict_t *ent)
 
 	vector_length = sqrt((forward[0]*forward[0] + forward[1]*forward[1] + forward[2]*forward[2]));
 	forward[0] = 0;
-	forward[1] = 0;
-	forward[2] = vector_length;
+	forward[1] = vector_length;
+	forward[2] = 0;//vector_length;
 	fire_rocket (ent, start, forward, (100 + (int)(random() * 20.0)), 650, 120, 120);
 
 }
