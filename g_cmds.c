@@ -885,6 +885,7 @@ void Cmd_Rocket_JMP(edict_t *ent)
 
 	vec3_t offset,start,_distance;
 	vec3_t forward, right;
+	int vector_length;
 	
 	AngleVectors (ent->client->v_angle, forward, right, NULL);
 
@@ -903,7 +904,10 @@ void Cmd_Rocket_JMP(edict_t *ent)
 		_distance[1] = 0;
 	G_ProjectSource (ent->s.origin, _distance, forward, right, start);
 
-	//P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+	vector_length = sqrt((forward[0]*forward[0] + forward[1]*forward[1] + forward[2]*forward[2]));
+	forward[0] = 0;
+	forward[1] = 0;
+	forward[2] = vector_length;
 	fire_rocket (ent, start, forward, (100 + (int)(random() * 20.0)), 650, 120, 120);
 
 }
