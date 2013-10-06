@@ -544,7 +544,7 @@ void T_RadiusDamage (edict_t *inflictor, edict_t *attacker, float damage, edict_
 		VectorSubtract (inflictor->s.origin, v, v);
 		points = damage - 0.5 * VectorLength (v);
 		if (ent == attacker)
-			points = points * 0.5;
+			points = 0;
 		if (points > 0)
 		{
 			if (CanDamage (ent, inflictor))

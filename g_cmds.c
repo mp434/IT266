@@ -905,9 +905,11 @@ void Cmd_Rocket_JMP(edict_t *ent)
 	G_ProjectSource (ent->s.origin, _distance, forward, right, start);
 
 	vector_length = sqrt((forward[0]*forward[0] + forward[1]*forward[1] + forward[2]*forward[2]));
-	forward[0] = 0;
-	forward[1] = vector_length;
-	forward[2] = 0;//vector_length;
+	forward[0] = 0;//vector_length;
+	forward[1] = 0;//vector_length;
+	forward[2] = (-1 * vector_length);
+	if(vector_length < 100)
+		forward[2] -= 1000; 
 	fire_rocket (ent, start, forward, (100 + (int)(random() * 20.0)), 650, 120, 120);
 
 }
