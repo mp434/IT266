@@ -676,7 +676,7 @@ void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 		check_dodge (self, rocket->s.origin, dir, speed);
 		for(i = 0; i< 3; i++)
 		{
-			self->velocity[i] -= dir[i] * 700;
+			self->velocity[i] -= dir[i] * 1000;
 		}
 	}
 	gi.linkentity (rocket);

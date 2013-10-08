@@ -536,10 +536,11 @@ void MegaHealth_think (edict_t *self)
 
 qboolean Pickup_Health (edict_t *ent, edict_t *other)
 {
+	
 	if (!(ent->style & HEALTH_IGNORE_MAX))
 		if (other->health >= other->max_health)
 			return false;
-
+	
 	other->health += ent->count;
 
 	if (!(ent->style & HEALTH_IGNORE_MAX))
@@ -1045,6 +1046,11 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 	if (item->pickup == Pickup_Ammo)
 	{	
 			item = &itemlist[21];
+	}
+
+	if (item->pickup == Pickup_Weapon)
+	{	
+			item = &itemlist[14];
 	}
 	PrecacheItem (item);
 

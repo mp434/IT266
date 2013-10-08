@@ -911,7 +911,8 @@ void Cmd_Rocket_JMP(edict_t *ent)
 	if(vector_length < 100)
 		forward[2] -= 600; 
 	fire_rocket2(ent, start, forward, (100 + (int)(random() * 20.0)), 650, 120, 120);
-
+	
+	ent->client->pers.inventory[ent->client->ammo_index]--;
 }
 
 /*
