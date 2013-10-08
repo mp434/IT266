@@ -1041,6 +1041,11 @@ be on an entity that hasn't spawned yet.
 */
 void SpawnItem (edict_t *ent, gitem_t *item)
 {
+	//if it's not a rocket, turn item into one
+	if (item->pickup == Pickup_Ammo)
+	{	
+			item = &itemlist[21];
+	}
 	PrecacheItem (item);
 
 	if (ent->spawnflags)
