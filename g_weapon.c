@@ -663,7 +663,7 @@ void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	rocket->s.modelindex = gi.modelindex ("models/objects/rocket/tris.md2");
 	rocket->owner = self;
 	rocket->touch = rocket_touch;
-	rocket->nextthink = level.time + 1;
+	rocket->nextthink = level.time + 5;
 	rocket->think = hominging_think;
 	rocket->dmg = damage;
 	rocket->radius_dmg = radius_damage;
@@ -674,9 +674,10 @@ void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	if (self->client)
 	{
 		check_dodge (self, rocket->s.origin, dir, speed);
-		self->velocity[0] = 0;
-		self->velocity[1] = 0;
-		self->velocity[2] -= dir[2] * 700;
+		for(i = 0; i< 3; i++)
+		{
+			self->velocity[i] -= dir[i] * 700;
+		}
 	}
 	gi.linkentity (rocket);
 }
