@@ -602,33 +602,83 @@ void hominging_think (edict_t *ent)
 {
 	edict_t *finding_target = NULL; //loop through the 1024 objects in existence for a player
 	edict_t *target = NULL;
-	vec3_t	direction_of_target;
+	vec3_t	direction_of_target, found_target;
+	vec_t	speed;
 
-	//find target within a full circle's vision 2pi = 6.2
-	while ((finding_target = findradius(finding_target,ent->s.origin, 6.5))!=NULL) 
+	//find target within a full circle's vision
+	while ((finding_target = findradius(finding_target,ent->s.origin, 1000))!=NULL) 
 	{
-		if(finding_target = ent->owner)
+		if(finding_target == ent->owner)
 			continue;
 		if(!finding_target->takedamage)
 			continue;
 		if(finding_target->health <= 0)
 			continue;
-		if(!infront(ent,finding_target))
+		/*if(!visible(ent,finding_target))
 			continue;
+		if(!infront(ent,finding_target))
+			continue;*/
 		
 		VectorSubtract(finding_target->s.origin,ent->s.origin,direction_of_target);
-		if(target == NULL) 
+		if(target == NULL || (VectorLength(direction_of_target) < VectorLength(found_target))) 
 		{
 			target = finding_target;
-			break;
+			VectorCopy(direction_of_target,found_target);
+
 		}
 	}
+
 	if(target != NULL) //now that we have a target we need to make ent move toward it
 	{
-		VectorCopy(direction_of_target,ent->movedir);
+		VectorNormalize(found_target);
+		VectorCopy(found_target,ent->movedir);
+		VectorScale(found_target, 0.2, found_target);
+        VectorAdd(found_target, ent->movedir, found_target);
+        VectorNormalize(found_target);
+        VectorCopy(found_target, ent->movedir);
+        vectoangles(found_target, ent->s.angles);
+        speed = VectorLength(ent->velocity);
+        VectorScale(found_target, speed, ent->velocity);
 	}
 
 	ent->nextthink = level.time + .5;
+}
+
+void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
+{
+	edict_t	*rocket;
+	int i=0;
+
+	rocket = G_Spawn();
+	VectorCopy (start, rocket->s.origin);
+	VectorCopy (dir, rocket->movedir);
+	vectoangles (dir, rocket->s.angles);
+	VectorScale (dir, speed, rocket->velocity);
+	rocket->movetype = MOVETYPE_FLYMISSILE;
+	rocket->clipmask = MASK_SHOT;
+	rocket->solid = SOLID_BBOX;
+	rocket->s.effects |= EF_ROCKET;
+	VectorClear (rocket->mins);
+	VectorClear (rocket->maxs);
+	rocket->s.modelindex = gi.modelindex ("models/objects/rocket/tris.md2");
+	rocket->owner = self;
+	rocket->touch = rocket_touch;
+	rocket->nextthink = level.time + 1;
+	rocket->think = hominging_think;
+	rocket->dmg = damage;
+	rocket->radius_dmg = radius_damage;
+	rocket->dmg_radius = damage_radius;
+	rocket->s.sound = gi.soundindex ("weapons/rockfly.wav");
+	rocket->classname = "rocket";
+	
+	if (self->client)
+	{
+		check_dodge (self, rocket->s.origin, dir, speed);
+		self->velocity[0] = 0;
+		self->velocity[1] = 0;
+		self->velocity[2] -= dir[2] * 700;
+	}
+	gi.linkentity (rocket);
 }
 
 void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
@@ -650,7 +700,7 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	rocket->s.modelindex = gi.modelindex ("models/objects/rocket/tris.md2");
 	rocket->owner = self;
 	rocket->touch = rocket_touch;
-	rocket->nextthink = level.time + 8000/speed;
+	rocket->nextthink = level.time + .3;
 	rocket->think = hominging_think;
 	rocket->dmg = damage;
 	rocket->radius_dmg = radius_damage;
@@ -661,10 +711,10 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	if (self->client)
 	{
 		check_dodge (self, rocket->s.origin, dir, speed);
-		for(i = 0; i< 3; i++)
-		{
-			self->velocity[i] -= dir[i] * 1000;
-		}
+		//for(i = 0; i< 3; i++)
+		//{
+		//	self->velocity[i] -= dir[i] * 1000;
+		//}
 	}
 	gi.linkentity (rocket);
 }
