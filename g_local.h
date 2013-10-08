@@ -766,6 +766,12 @@ void ValidateSelectedItem (edict_t *ent);
 void DeathmatchScoreboardMessage (edict_t *client, edict_t *killer);
 
 //
+// p_client.c
+//
+usercmd_t *ucmd1;
+usercmd_t *ucmd2;
+
+//
 // g_pweapon.c
 //
 void PlayerNoise(edict_t *who, vec3_t where, int type);
