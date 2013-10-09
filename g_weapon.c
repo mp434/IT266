@@ -1,5 +1,4 @@
 #include "g_local.h"
-//test 
 
 /*
 =================
@@ -606,6 +605,68 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 	G_FreeEdict (ent);
 }
 
+// Think function for homing rockets
+void homing_think (edict_t *ent)
+{
+	edict_t *target = NULL;
+	edict_t *blip = NULL;
+	vec3_t targetdir, blipdir;
+	vec_t speed;
+
+	while ((blip = findradius(blip, ent->s.origin, 1000)) != NULL)
+	{
+		if (!(blip->svflags & SVF_MONSTER) && !blip->client)
+		{
+			continue;
+		}
+		if (blip ==  ent->owner)
+		{
+			continue;
+		}
+		if (!blip->takedamage)
+		{
+			continue;
+		}
+		if (blip->health <= 0)
+		{
+			continue; 
+		}
+		if (!visible(ent, blip))
+		{
+			continue;
+		}
+		if (!infront(ent, blip))
+		{
+			continue; 
+		}
+		
+		VectorSubtract(blip->s.origin, ent->s.origin, blipdir);
+		blipdir[2] += 16;
+		if ((target == NULL) || (VectorLength(blipdir) < VectorLength(targetdir)))
+		{	
+			target = blip;
+			VectorCopy(blipdir, targetdir);
+		}
+	}
+
+	if (target != NULL)
+	{
+		VectorNormalize(targetdir);
+		VectorScale(targetdir, 0.2, targetdir);
+		VectorAdd(targetdir, ent->movedir, targetdir);
+		VectorNormalize(targetdir);
+		VectorCopy(targetdir, ent->movedir);
+		vectoangles(targetdir, ent->s.angles);
+		speed = VectorLength(ent->velocity);
+		VectorScale(targetdir, speed, ent->velocity);
+	}
+
+	ent->nextthink = level.time + .1;
+}
+
+
+	
+
 void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
 {
 	//declaring new pointer towards a rocket
@@ -630,9 +691,15 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	rocket->owner = self;
 	//defining a rocket pointer
 	rocket->touch = rocket_touch;
-	rocket->nextthink = level.time + 8000/speed;
 
-	rocket->think = G_FreeEdict;
+	//Homing rocket edit - changed location.
+	//rocket->nextthink = level.time + 8000/speed;
+	//rocket->think = G_FreeEdict;
+
+	//calls homing missle think
+	rocket->nextthink = level.time + .1;
+	rocket->think = homing_think;
+
 	rocket->dmg = damage;
 	rocket->radius_dmg = radius_damage;
 	rocket->dmg_radius = damage_radius;
