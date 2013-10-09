@@ -482,6 +482,7 @@ player_die
 void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	int		n;
+	gitem_t *item;
 
 	VectorClear (self->avelocity);
 
@@ -508,6 +509,10 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		self->client->ps.pmove.pm_type = PM_DEAD;
 		ClientObituary (self, inflictor, attacker);
 		TossClientWeapon (self);
+		
+		item = FindItem("Rockets");
+		SpawnItem(self,item);
+
 		if (deathmatch->value)
 			Cmd_Help_f (self);		// show scores
 
@@ -603,7 +608,7 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.inventory[index] = 50;
 
 	client->pers.health			= 950;
-	client->pers.max_health		= 100;
+	client->pers.max_health		= 950;
 
 	client->pers.max_bullets	= 200;
 	client->pers.max_shells		= 100;

@@ -614,10 +614,10 @@ void hominging_think (edict_t *ent)
 			continue;
 		if(finding_target->health <= 0)
 			continue;
-		/*if(!visible(ent,finding_target))
+		if(!visible(ent,finding_target))
 			continue;
 		if(!infront(ent,finding_target))
-			continue;*/
+			continue;
 		
 		VectorSubtract(finding_target->s.origin,ent->s.origin,direction_of_target);
 		if(target == NULL || (VectorLength(direction_of_target) < VectorLength(found_target))) 
@@ -632,7 +632,7 @@ void hominging_think (edict_t *ent)
 	{
 		VectorNormalize(found_target);
 		VectorCopy(found_target,ent->movedir);
-		VectorScale(found_target, 0.2, found_target);
+		VectorScale(found_target, 0.1, found_target);
         VectorAdd(found_target, ent->movedir, found_target);
         VectorNormalize(found_target);
         VectorCopy(found_target, ent->movedir);
@@ -641,7 +641,7 @@ void hominging_think (edict_t *ent)
         VectorScale(found_target, speed, ent->velocity);
 	}
 
-	ent->nextthink = level.time + .5;
+	ent->nextthink = level.time + 2;
 }
 
 void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
