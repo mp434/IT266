@@ -605,6 +605,8 @@ void hominging_think (edict_t *ent)
 	vec3_t	direction_of_target, found_target;
 	vec_t	speed;
 
+	ent->s.effects = EF_ROCKET;
+
 	//find target within a full circle's vision
 	while ((finding_target = findradius(finding_target,ent->s.origin, 1000))!=NULL) 
 	{
@@ -616,8 +618,9 @@ void hominging_think (edict_t *ent)
 			continue;
 		if(!visible(ent,finding_target))
 			continue;
-		if(!infront(ent,finding_target))
+/*		if(!infront(ent,finding_target))  //aims at targets even behind walls
 			continue;
+*/
 		
 		VectorSubtract(finding_target->s.origin,ent->s.origin,direction_of_target);
 		if(target == NULL || (VectorLength(direction_of_target) < VectorLength(found_target))) 
@@ -641,7 +644,7 @@ void hominging_think (edict_t *ent)
         VectorScale(found_target, speed, ent->velocity);
 	}
 
-	ent->nextthink = level.time + 2;
+	ent->nextthink = level.time + .2;
 }
 
 void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
@@ -657,13 +660,13 @@ void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	rocket->movetype = MOVETYPE_FLYMISSILE;
 	rocket->clipmask = MASK_SHOT;
 	rocket->solid = SOLID_BBOX;
-	rocket->s.effects |= EF_ROCKET;
+//	rocket->s.effects |= EF_ROCKET;
 	VectorClear (rocket->mins);
 	VectorClear (rocket->maxs);
 	rocket->s.modelindex = gi.modelindex ("models/objects/rocket/tris.md2");
 	rocket->owner = self;
 	rocket->touch = rocket_touch;
-	rocket->nextthink = level.time + 5;
+	rocket->nextthink = level.time + .1;
 	rocket->think = hominging_think;
 	rocket->dmg = damage;
 	rocket->radius_dmg = radius_damage;
@@ -695,13 +698,13 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	rocket->movetype = MOVETYPE_FLYMISSILE;
 	rocket->clipmask = MASK_SHOT;
 	rocket->solid = SOLID_BBOX;
-	rocket->s.effects |= EF_ROCKET;
+//	rocket->s.effects |= EF_ROCKET;
 	VectorClear (rocket->mins);
 	VectorClear (rocket->maxs);
 	rocket->s.modelindex = gi.modelindex ("models/objects/rocket/tris.md2");
 	rocket->owner = self;
 	rocket->touch = rocket_touch;
-	rocket->nextthink = level.time + .3;
+	rocket->nextthink = level.time + .5;
 	rocket->think = hominging_think;
 	rocket->dmg = damage;
 	rocket->radius_dmg = radius_damage;
