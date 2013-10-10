@@ -933,6 +933,12 @@ struct gclient_s
 
 	float		pickup_msg_time;
 
+	// Grappling hook variable additions
+	edict_t     *hook;
+	edict_t     *hook_touch;
+	qboolean	on_hook;
+	int			hook_frame;
+
 	float		flood_locktill;		// locked from talking
 	float		flood_when[10];		// when messages were said
 	int			flood_whenhead;		// head pointer for when said

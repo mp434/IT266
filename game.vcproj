@@ -1053,6 +1053,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\grapple.c"
+				>
+			</File>
+			<File
 				RelativePath="m_actor.c"
 				>
 				<FileConfiguration
@@ -2143,6 +2147,10 @@
 			</File>
 			<File
 				RelativePath="game.h"
+				>
+			</File>
+			<File
+				RelativePath=".\grapple.h"
 				>
 			</File>
 			<File

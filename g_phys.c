@@ -2,6 +2,8 @@
 
 #include "g_local.h"
 
+#include "grapple.h"
+
 /*
 
 
@@ -556,6 +558,35 @@ void SV_Physics_Pusher (edict_t *ent)
 	pushed_p = pushed;
 	for (part = ent ; part ; part=part->teamchain)
 	{
+		//Grapling Hook
+		qboolean blocked = false;
+        if (part->mynoise2 && part->mynoise2->think == Think_Grapple)
+        {
+            edict_t *hook = part->mynoise2;
+            vec3_t org, org2, forward, right, up, move2;
+
+            if (hook->enemy == NULL || hook->inuse == false)
+                continue;
+
+            VectorScale (part->velocity, FRAMETIME, move);
+            VectorScale (part->avelocity, FRAMETIME, amove);            
+
+            VectorAdd(hook->s.origin, move, hook->s.origin);
+            VectorAdd(hook->s.angles, amove, hook->s.angles);
+
+            // figure movement due to the pusher's amove
+            VectorSubtract (vec3_origin, amove, org);
+            AngleVectors (org, forward, right, up);
+
+            VectorSubtract (hook->s.origin, part->s.origin, org);
+            org2[0] = DotProduct (org, forward);
+            org2[1] = -DotProduct (org, right);
+            org2[2] = DotProduct (org, up);
+            VectorSubtract (org2, org, move2);
+            VectorAdd (hook->s.origin, move2, hook->s.origin);
+        }
+
+
 		if (part->velocity[0] || part->velocity[1] || part->velocity[2] ||
 			part->avelocity[0] || part->avelocity[1] || part->avelocity[2]
 			)

@@ -2,6 +2,8 @@
 
 #include "g_local.h"
 
+#include "grapple.h"
+
 
 /*QUAKED func_group (0 0 0) ?
 Used to group brushes together just for editor convenience.
@@ -1787,6 +1789,9 @@ void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	other->client->ps.pmove.pm_time = 160>>3;		// hold time
 	other->client->ps.pmove.pm_flags |= PMF_TIME_TELEPORT;
 
+	//Grappling hook
+	other->client->hook_frame = level.framenum + 1;
+
 	// draw the teleport splash at source and on the player
 	self->owner->s.event = EV_PLAYER_TELEPORT;
 	other->s.event = EV_PLAYER_TELEPORT;
@@ -1803,6 +1808,11 @@ void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 
 	// kill anything at the destination
 	KillBox (other);
+
+	//Grappling hook edit
+	if (Is_Grappling(other->client)) {
+		Release_Grapple(other->client->hook);
+    }
 
 	gi.linkentity (other);
 }
