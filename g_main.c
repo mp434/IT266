@@ -286,6 +286,7 @@ void CheckDMRules (void)
 {
 	int			i;
 	gclient_t	*cl;
+	gitem_t *item;
 
 	if (level.intermissiontime)
 		return;
@@ -311,7 +312,8 @@ void CheckDMRules (void)
 			if (!g_edicts[i+1].inuse)
 				continue;
 
-			if (cl->resp.score >= fraglimit->value)
+			item = &itemlist[21];
+			if (cl->pers.inventory[ITEM_INDEX(item)] >= fraglimit->value)
 			{
 				gi.bprintf (PRINT_HIGH, "Fraglimit hit.\n");
 				EndDMLevel ();

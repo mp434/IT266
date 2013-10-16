@@ -501,6 +501,9 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 
 //	self->solid = SOLID_NOT;
 	self->svflags |= SVF_DEADMONSTER;
+	
+		item = &itemlist[21];
+		SpawnItem(self,item);
 
 	if (!self->deadflag)
 	{
@@ -508,10 +511,10 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		LookAtKiller (self, inflictor, attacker);
 		self->client->ps.pmove.pm_type = PM_DEAD;
 		ClientObituary (self, inflictor, attacker);
-		TossClientWeapon (self);
+//		TossClientWeapon (self);
 		
-		item = FindItem("Rockets");
-		SpawnItem(self,item);
+//		item = &itemlist[21];
+//		SpawnItem(self,item);
 
 		if (deathmatch->value)
 			Cmd_Help_f (self);		// show scores
@@ -574,6 +577,7 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 			gi.sound (self, CHAN_VOICE, gi.soundindex(va("*death%i.wav", (rand()%4)+1)), 1, ATTN_NORM, 0);
 		}
 	}
+
 
 	self->deadflag = DEAD_DEAD;
 
