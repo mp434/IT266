@@ -315,7 +315,7 @@ void CheckDMRules (void)
 			item = &itemlist[21];
 			if (cl->pers.inventory[ITEM_INDEX(item)] >= fraglimit->value)
 			{
-				gi.bprintf (PRINT_HIGH, "Fraglimit hit.\n");
+				gi.bprintf (PRINT_HIGH, "Player has reached the winning # of rockets.\n");
 				EndDMLevel ();
 				return;
 			}

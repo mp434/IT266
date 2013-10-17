@@ -502,8 +502,8 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 //	self->solid = SOLID_NOT;
 	self->svflags |= SVF_DEADMONSTER;
 	
-		item = &itemlist[21];
-		SpawnItem(self,item);
+	item = &itemlist[21];
+	SpawnItem(self,item);
 
 	if (!self->deadflag)
 	{

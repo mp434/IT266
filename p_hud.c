@@ -154,6 +154,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	int		picnum;
 	int		x, y;
 	gclient_t	*cl;
+	gitem_t *item;
 	edict_t		*cl_ent;
 	char	*tag;
 
@@ -164,7 +165,9 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		cl_ent = g_edicts + 1 + i;
 		if (!cl_ent->inuse || game.clients[i].resp.spectator)
 			continue;
-		score = game.clients[i].resp.score;
+		
+		item = &itemlist[21];
+		score = game.clients[i].pers.inventory[ITEM_INDEX(item)];
 		for (j=0 ; j<total ; j++)
 		{
 			if (score > sortedscores[j])
@@ -219,7 +222,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		// send the layout
 		Com_sprintf (entry, sizeof(entry),
 			"client %i %i %i %i %i %i ",
-			x, y, sorted[i], cl->resp.score, cl->ping, (level.framenum - cl->resp.enterframe)/600);
+			x, y, sorted[i], cl->pers.inventory[ITEM_INDEX(item)], cl->ping, (level.framenum - cl->resp.enterframe)/600);
 		j = strlen(entry);
 		if (stringlength + j > 1024)
 			break;

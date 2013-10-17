@@ -1618,7 +1618,7 @@ always owned, never in the world
 /* icon */		"a_rockets",
 /* pickup */	"Rockets",
 /* width */		3,
-		5,
+		20,
 		NULL,
 		IT_AMMO,
 		0,
