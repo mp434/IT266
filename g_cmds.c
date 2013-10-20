@@ -887,6 +887,10 @@ void Cmd_Rocket_JMP(edict_t *ent)
 	vec3_t forward, right;
 	int vector_length;
 	
+	
+	if(ent->client->pers.inventory[ent->client->ammo_index]<5) 
+		return;
+
 	AngleVectors (ent->client->v_angle, forward, right, NULL);
 
 	VectorScale (forward, -2, ent->client->kick_origin);
@@ -912,7 +916,7 @@ void Cmd_Rocket_JMP(edict_t *ent)
 		forward[2] -= 600; */
 	fire_rocket2(ent, start, forward, (100 + (int)(random() * 20.0)), 300, 120, 120);
 	
-	ent->client->pers.inventory[ent->client->ammo_index]--;
+	ent->client->pers.inventory[ent->client->ammo_index]-=5;
 }
 void Cmd_Rocket_right(edict_t *ent)
 {
@@ -920,7 +924,10 @@ void Cmd_Rocket_right(edict_t *ent)
 	vec3_t offset,start,_distance;
 	vec3_t forward, right;
 	int vector_length;
-	
+
+	if(ent->client->pers.inventory[ent->client->ammo_index]<5) 
+		return;
+
 	AngleVectors (ent->client->v_angle, forward, right, NULL);
 
 	VectorScale (forward, -2, ent->client->kick_origin);
@@ -940,7 +947,7 @@ void Cmd_Rocket_right(edict_t *ent)
 
 	fire_rocket3(ent, start, right, (100 + (int)(random() * 20.0)), 300, 120, 120);
 	
-	ent->client->pers.inventory[ent->client->ammo_index]--;
+	ent->client->pers.inventory[ent->client->ammo_index]-=5;
 }
 
 /*

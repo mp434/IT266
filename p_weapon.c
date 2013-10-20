@@ -773,8 +773,8 @@ void Weapon_RocketLauncher_Fire (edict_t *ent)
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (! ( (int)dmflags->value & DF_INFINITE_AMMO ) )
-		ent->client->pers.inventory[ent->client->ammo_index]--;
+	//if (! ( (int)dmflags->value & DF_INFINITE_AMMO ) )
+	//	ent->client->pers.inventory[ent->client->ammo_index]--;
 }
 
 void Weapon_RocketLauncher (edict_t *ent)

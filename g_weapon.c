@@ -649,8 +649,12 @@ void hominging_think (edict_t *ent)
 
 void fire_rocket3 (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
 {
+
 	edict_t	*rocket;
 	int i=0;
+	
+	if(self->client->pers.inventory[self->client->ammo_index]<=5) 
+		return;
 
 	rocket = G_Spawn();
 	VectorCopy (start, rocket->s.origin);
@@ -681,14 +685,12 @@ void fire_rocket3 (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 		for(i=0;i<3;i++)
 		{
 			self->s.angles[i] = -1 * rocket->s.angles[i];
-			if(i==2 && self->velocity[i]<500)
-				self->velocity[i] = 500;
+			if(i==2 && self->velocity[i]<300)
+				self->velocity[i] = 300;
 			if(i==2) break;
 			self->velocity[i] = -2 * rocket->velocity[i];
 		}
 	}
-	
-	self->client->pers.inventory[self->client->ammo_index]-=5;
 
 	gi.linkentity (rocket);
 }
@@ -696,6 +698,9 @@ void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 {
 	edict_t	*rocket;
 	int i=0;
+	
+	if(self->client->pers.inventory[self->client->ammo_index]<=5) 
+		return;
 
 	rocket = G_Spawn();
 	VectorCopy (start, rocket->s.origin);
@@ -724,7 +729,6 @@ void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 		check_dodge (self, rocket->s.origin, dir, speed);
 		self->velocity[2] += 9000;
 	}
-	self->client->pers.inventory[self->client->ammo_index]-=5;
 	gi.linkentity (rocket);
 }
 
@@ -758,11 +762,9 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	if (self->client)
 	{
 		check_dodge (self, rocket->s.origin, dir, speed);
-		//for(i = 0; i< 3; i++)
-		//{
-		//	self->velocity[i] -= dir[i] * 1000;
-		//}
 	}
+	
+	self->client->pers.inventory[self->client->ammo_index]--;
 	gi.linkentity (rocket);
 }
 
