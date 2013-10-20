@@ -904,13 +904,41 @@ void Cmd_Rocket_JMP(edict_t *ent)
 		_distance[1] = 0;
 	G_ProjectSource (ent->s.origin, _distance, forward, right, start);
 
-	vector_length = sqrt((forward[0]*forward[0] + forward[1]*forward[1] + forward[2]*forward[2]));
+	vector_length = -300;//sqrt((forward[0]*forward[0] + forward[1]*forward[1] + forward[2]*forward[2]));
 	forward[0] = 0;
 	forward[1] = 0;
-	forward[2] = (-1 * vector_length);
-	if(vector_length < 100)
-		forward[2] -= 600; 
-	fire_rocket2(ent, start, forward, (100 + (int)(random() * 20.0)), 650, 120, 120);
+	forward[2] = vector_length;//(-1 * vector_length);
+	/*if(vector_length < 100)
+		forward[2] -= 600; */
+	fire_rocket2(ent, start, forward, (100 + (int)(random() * 20.0)), 300, 120, 120);
+	
+	ent->client->pers.inventory[ent->client->ammo_index]--;
+}
+void Cmd_Rocket_right(edict_t *ent)
+{
+
+	vec3_t offset,start,_distance;
+	vec3_t forward, right;
+	int vector_length;
+	
+	AngleVectors (ent->client->v_angle, forward, right, NULL);
+
+	VectorScale (forward, -2, ent->client->kick_origin);
+	ent->client->kick_angles[0] = -1;
+
+	VectorSet(offset, 8, 8, ent->viewheight-8);
+	
+	_distance[0] = offset [0];
+	_distance[1] = offset [1];
+	_distance[2] = offset [2];
+
+	if (ent->client->pers.hand == LEFT_HANDED)
+		_distance[1] *= -1;
+	else if (ent->client->pers.hand == CENTER_HANDED)
+		_distance[1] = 0;
+	G_ProjectSource (ent->s.origin, _distance, forward, right, start);
+
+	fire_rocket3(ent, start, right, (100 + (int)(random() * 20.0)), 300, 120, 120);
 	
 	ent->client->pers.inventory[ent->client->ammo_index]--;
 }
@@ -1004,6 +1032,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_PlayerList_f(ent);
 	else if (Q_stricmp(cmd,"rocketjmp") == 0)
 		Cmd_Rocket_JMP(ent);
+	else if (Q_stricmp(cmd,"rocketright") == 0)
+		Cmd_Rocket_right(ent);
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }

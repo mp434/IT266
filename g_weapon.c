@@ -647,6 +647,51 @@ void hominging_think (edict_t *ent)
 	ent->nextthink = level.time + .2;
 }
 
+void fire_rocket3 (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
+{
+	edict_t	*rocket;
+	int i=0;
+
+	rocket = G_Spawn();
+	VectorCopy (start, rocket->s.origin);
+	VectorCopy (dir, rocket->movedir);
+	vectoangles (dir, rocket->s.angles);
+	VectorScale (dir, speed, rocket->velocity);
+	rocket->movetype = MOVETYPE_FLYMISSILE;
+	rocket->clipmask = MASK_SHOT;
+	rocket->solid = SOLID_BBOX;
+//	rocket->s.effects |= EF_ROCKET;
+	VectorClear (rocket->mins);
+	VectorClear (rocket->maxs);
+	rocket->s.modelindex = gi.modelindex ("models/objects/rocket/tris.md2");
+	rocket->owner = self;
+	rocket->touch = rocket_touch;
+	rocket->nextthink = level.time + .2;
+	rocket->think = hominging_think;
+	rocket->dmg = damage;
+	rocket->radius_dmg = radius_damage;
+	rocket->dmg_radius = damage_radius;
+	rocket->s.sound = gi.soundindex ("weapons/rockfly.wav");
+	rocket->classname = "rocket";
+	
+	if (self->client)
+	{
+		check_dodge (self, rocket->s.origin, dir, speed);
+		//self->velocity[1] = -9500;
+		for(i=0;i<3;i++)
+		{
+			self->s.angles[i] = -1 * rocket->s.angles[i];
+			if(i==2 && self->velocity[i]<500)
+				self->velocity[i] = 500;
+			if(i==2) break;
+			self->velocity[i] = -2 * rocket->velocity[i];
+		}
+	}
+	
+	self->client->pers.inventory[self->client->ammo_index]-=5;
+
+	gi.linkentity (rocket);
+}
 void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
 {
 	edict_t	*rocket;
@@ -666,7 +711,7 @@ void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	rocket->s.modelindex = gi.modelindex ("models/objects/rocket/tris.md2");
 	rocket->owner = self;
 	rocket->touch = rocket_touch;
-	rocket->nextthink = level.time + .1;
+	rocket->nextthink = level.time + .2;
 	rocket->think = hominging_think;
 	rocket->dmg = damage;
 	rocket->radius_dmg = radius_damage;
@@ -677,11 +722,9 @@ void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	if (self->client)
 	{
 		check_dodge (self, rocket->s.origin, dir, speed);
-		for(i = 0; i< 3; i++)
-		{
-			self->velocity[i] -= dir[i] * 1000;
-		}
+		self->velocity[2] += 9000;
 	}
+	self->client->pers.inventory[self->client->ammo_index]-=5;
 	gi.linkentity (rocket);
 }
 
