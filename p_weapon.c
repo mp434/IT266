@@ -740,7 +740,7 @@ ROCKET
 void Weapon_RocketLauncher_Fire (edict_t *ent)
 {
 	vec3_t	offset, start;
-	vec3_t	forward, right;
+	vec3_t	forward, right, temp, left;
 	int		damage;
 	float	damage_radius;
 	int		radius_damage;
@@ -761,7 +761,41 @@ void Weapon_RocketLauncher_Fire (edict_t *ent)
 
 	VectorSet(offset, 8, 8, ent->viewheight-8);
 	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+	
+	VectorScale(right,-1,left);
+	
+	VectorNormalize2(left,temp);
+	VectorScale(temp,.3,temp);
+	VectorSubtract(forward,temp,left);
+	left[2]=forward[2];
+
+	
+	VectorNormalize2(right,temp);
+	VectorScale(temp,.3,temp);
+	VectorSubtract(forward,temp,right);
+	right[2]=forward[2];
+	
 	fire_rocket (ent, start, forward, damage, 450, damage_radius, radius_damage);
+	fire_rocket (ent, start, left, damage, 450, damage_radius, radius_damage);
+	fire_rocket (ent, start, right, damage, 450, damage_radius, radius_damage);
+	
+	temp[0] = 0;
+	temp[1] = 0;
+	temp[2] = .5;
+	
+	VectorSubtract(forward,temp,forward);
+	VectorSubtract(left,temp,left);
+	VectorSubtract(right,temp,right);
+	fire_rocket (ent, start, forward, damage, 450, damage_radius, radius_damage);
+	fire_rocket (ent, start, left, damage, 450, damage_radius, radius_damage);
+	fire_rocket (ent, start, right, damage, 450, damage_radius, radius_damage);
+	
+	VectorMA(forward,2,temp,forward);
+	VectorMA(left,2,temp,left);
+	VectorMA(right,2,temp,right);
+	fire_rocket (ent, start, forward, damage, 450, damage_radius, radius_damage);
+	fire_rocket (ent, start, left, damage, 450, damage_radius, radius_damage);
+	fire_rocket (ent, start, right, damage, 450, damage_radius, radius_damage);
 
 	// send muzzle flash
 	gi.WriteByte (svc_muzzleflash);

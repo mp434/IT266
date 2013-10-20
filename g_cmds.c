@@ -976,9 +976,7 @@ void Cmd_Rocket_right(edict_t *ent)
 		_distance[1] = 0;
 	G_ProjectSource (ent->s.origin, _distance, forward, right, start);
 
-	right[0] *= -1;
-	right[1] *= -1;
-	right[2] *= -1;
+	VectorInverse(right);
 
 	fire_rocket3(ent, start, right, (100 + (int)(random() * 20.0)), 300, 120, 120);
 	
@@ -1011,9 +1009,7 @@ void Cmd_Rocket_fwd(edict_t *ent)
 		_distance[1] = 0;
 	G_ProjectSource (ent->s.origin, _distance, forward, right, start);
 
-	forward[0] *= -1;
-	forward[1] *= -1;
-	forward[2] *= -1;
+	VectorInverse(forward);
 
 	fire_rocket3(ent, start, forward, (100 + (int)(random() * 20.0)), 300, 120, 120);
 	
@@ -1045,10 +1041,6 @@ void Cmd_Rocket_back(edict_t *ent)
 	else if (ent->client->pers.hand == CENTER_HANDED)
 		_distance[1] = 0;
 	G_ProjectSource (ent->s.origin, _distance, forward, right, start);
-
-	//forward[0] *= -1;
-	//forward[1] *= -1;
-	//forward[2] *= -1;
 
 	fire_rocket3(ent, start, forward, (100 + (int)(random() * 20.0)), 300, 120, 120);
 	
