@@ -652,9 +652,6 @@ void fire_rocket3 (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 
 	edict_t	*rocket;
 	int i=0;
-	
-	if(self->client->pers.inventory[self->client->ammo_index]<=5) 
-		return;
 
 	rocket = G_Spawn();
 	VectorCopy (start, rocket->s.origin);
@@ -698,9 +695,6 @@ void fire_rocket2 (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 {
 	edict_t	*rocket;
 	int i=0;
-	
-	if(self->client->pers.inventory[self->client->ammo_index]<=5) 
-		return;
 
 	rocket = G_Spawn();
 	VectorCopy (start, rocket->s.origin);
