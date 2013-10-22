@@ -774,6 +774,25 @@ void Weapon_RocketLauncher_Fire (edict_t *ent)
 	VectorScale(temp,.3,temp);
 	VectorSubtract(forward,temp,right);
 	right[2]=forward[2];
+
+	/*
+	MP434:
+	Hey Garvin, I noticed you didn't get your fire rocket on double tap working.
+	I know you spoke to Prof K about it and he said to check previous frame for button press.
+	Seems like that didn't work out. Did you try using boolen flags in g_client?
+	You could use one for each movement direction and then do something like:
+
+	if ((ent->client->buttons & <movement button>) && (<boolFlag>)){
+		fire_rocket (ent, start, <dir>, damage, 450, damage_radius, radius_damage);		
+
+	}
+
+	Code could use more comments for readability XFD, but otherwise looking good.
+	Also, maybe try increasing how often you think for homing rocket think;
+	Perhaps changing the targetDir[2] - (some ammount) so it points at the floor
+	so it's harder to dodge.
+
+	*/
 	
 	fire_rocket (ent, start, forward, damage, 450, damage_radius, radius_damage);
 	fire_rocket (ent, start, left, damage, 450, damage_radius, radius_damage);
