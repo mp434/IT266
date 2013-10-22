@@ -623,6 +623,9 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.max_slugs		= 50;
 
 	client->pers.connected = true;
+
+	client->burnAmmount = 0;
+    client->burnDamage = 0;
 }
 
 
@@ -1579,6 +1582,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	edict_t	*other;
 	int		i, j;
 	pmove_t	pm;
+	vec3_t dir = {0,0,0};
 
 	level.current_entity = ent;
 	client = ent->client;
@@ -1763,7 +1767,25 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			UpdateChaseCam(other);
 	}
 
-	//Grappling hook
+	// FlameThrowerDmg
+	if (client->pers.health > 0){
+
+		if (client->throttle <= 0){
+
+			if (client->burnAmmount > 0){
+
+				client->burnAmmount--;
+				T_Damage (ent, client->burnGiver, client->burnGiver, dir, ent->s.origin, ent->s.origin, client->burnDamage, 0, DAMAGE_NO_KNOCKBACK, MOD_HIT);
+		  }
+		  client->throttle = 100;
+
+    }else{
+
+      client->throttle--;
+    }
+  } 
+
+	// Grappling hook
 	// Check to see if player pressing the "use" key
     if (ent->client->buttons & BUTTON_USE && !ent->deadflag && client->hook_frame <= level.framenum)
     {     

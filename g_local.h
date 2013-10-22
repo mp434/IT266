@@ -955,6 +955,12 @@ struct gclient_s
 	float airstrike_time; // Timer for incoming missiles
 	int airstrike_type; // 1=Rocket, 2=Cluster
 
+	// Flamethrower variables
+	int                        burnAmmount;        //how much poison in system
+    int                        burnDamage; //how much damage per poison think
+    edict_t *burnGiver;        // the last person to inflict poison
+	int						   throttle;
+
 };
 
 

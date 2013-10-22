@@ -306,6 +306,15 @@ void blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 		else
 			mod = MOD_BLASTER;
 		T_Damage (other, self, self->owner, self->velocity, self->s.origin, plane->normal, self->dmg, 1, DAMAGE_ENERGY, mod);
+
+		//adds flame damage from the blaster shots
+		if (other->client != NULL){
+
+        other->client->burnAmmount += 2;
+        other->client->burnDamage += 2;
+        other->client->burnGiver = self;
+         }
+
 	}
 	else
 	{
