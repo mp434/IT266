@@ -671,7 +671,7 @@ void Weapon_Grenade (edict_t *ent)
 			weapon_grenade_fire (ent, false);
 		}
 
-		if ((ent->client->ps.gunframe == 15) && (level.time < ent->client->grenade_time))
+		if ((ent->client->ps.gunframe == 5) && (level.time < ent->client->grenade_time))
 			return;
 
 		ent->client->ps.gunframe++;
@@ -681,6 +681,9 @@ void Weapon_Grenade (edict_t *ent)
 			ent->client->grenade_time = 0;
 			ent->client->weaponstate = WEAPON_READY;
 		}
+
+		//==========================================
+
 	}
 }
 

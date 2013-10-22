@@ -463,6 +463,7 @@ static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurfa
 	Grenade_Explode (ent);
 }
 
+// this is for launching grenade
 void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius)
 {
 	edict_t	*grenade;
@@ -487,7 +488,7 @@ void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int s
 	grenade->s.modelindex = gi.modelindex ("models/objects/grenade/tris.md2");
 	grenade->owner = self;
 	grenade->touch = Grenade_Touch;
-	grenade->nextthink = level.time + timer;
+	grenade->nextthink = level.time + .1;
 	grenade->think = Grenade_Explode;
 	grenade->dmg = damage;
 	grenade->dmg_radius = damage_radius;
@@ -496,22 +497,69 @@ void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int s
 	gi.linkentity (grenade);
 }
 
+// Added seperate think function for proxMines
+static void proxim_think (edict_t *ent) {
+	edict_t *blip = NULL;
+
+	if (level.time > ent->delay){
+
+		   Grenade_Explode(ent);
+		   return;
+	}
+
+	ent->think = proxim_think;
+
+	while ((blip = findradius(blip, ent->s.origin, 100)) != NULL) {
+		   if (!(blip->svflags & SVF_MONSTER) && !blip->client)
+				   continue;
+		   if (blip == ent->owner)
+				   continue;
+		   if (!blip->takedamage)
+				   continue;
+		   if (blip->health <= 0)
+				   continue;
+		   if (!visible(ent, blip))
+				   continue;
+		   ent->think = Grenade_Explode;
+		   break;
+}
+
+ ent->nextthink = level.time + .1;
+}
+
+
+// This is for throwing grenades
 void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held)
 {
 	edict_t	*grenade;
 	vec3_t	dir;
 	vec3_t	forward, right, up;
 
+
+
 	vectoangles (aimdir, dir);
 	AngleVectors (dir, forward, right, up);
-
 	grenade = G_Spawn();
+
+	//Proxy edit
+	//Changes up such that mine starts near floor
+	start[2] -= 25;
 	VectorCopy (start, grenade->s.origin);
-	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
-	VectorSet (grenade->avelocity, 300, 300, 300);
-	grenade->movetype = MOVETYPE_BOUNCE;
+	
+	// VectorScale (aimdir, speed, grenade->velocity);
+	// VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
+	// VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	// VectorSet (grenade->avelocity, 300, 300, 300);
+
+	// Grenade drops at current location with no velocity for proxyMine
+	VectorScale (aimdir, 0, grenade->velocity);
+	VectorMA (grenade->velocity, 0, up, grenade->velocity);
+	VectorMA (grenade->velocity, 0, right, grenade->velocity);
+
+	// Grenade will not float in the sky
+	// grenade->movetype = MOVETYPE_BOUNCE;
+	grenade->movetype = MOVETYPE_FLY;
+
 	grenade->clipmask = MASK_SHOT;
 	grenade->solid = SOLID_BBOX;
 	grenade->s.effects |= EF_GRENADE;
@@ -520,15 +568,25 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 	grenade->s.modelindex = gi.modelindex ("models/objects/grenade2/tris.md2");
 	grenade->owner = self;
 	grenade->touch = Grenade_Touch;
-	grenade->nextthink = level.time + timer;
-	grenade->think = Grenade_Explode;
+
+	// modifing for proxyMines
+	// grenade->nextthink = level.time + timer;
+	grenade->nextthink = level.time + .1;
+	// grenade->think = Grenade_Explode;
+	grenade->think = proxim_think;
+	// Changes grenade explosion delay to 3 seconds
+	grenade->delay = level.time + 3;
+
 	grenade->dmg = damage;
+	
 	grenade->dmg_radius = damage_radius;
 	grenade->classname = "hgrenade";
+
 	if (held)
 		grenade->spawnflags = 3;
 	else
 		grenade->spawnflags = 1;
+
 	grenade->s.sound = gi.soundindex("weapons/hgrenc1b.wav");
 
 	if (timer <= 0.0)
