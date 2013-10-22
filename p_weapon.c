@@ -826,6 +826,12 @@ void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, in
 	AngleVectors (ent->client->v_angle, forward, right, NULL);
 	VectorSet(offset, 24, 8, ent->viewheight-8);
 	VectorAdd (offset, g_offset, offset);
+
+	//adds some randomness to the firing direction to make it more flamey;
+	forward[0] += crandom() * .1;
+	forward[1] += crandom() * .1;
+	forward[2] += crandom() * .1;
+
 	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
 
 	VectorScale (forward, -2, ent->client->kick_origin);
