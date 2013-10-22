@@ -8,11 +8,14 @@
 static qboolean	is_quad;
 static byte		is_silenced;
 
+// Airstrike
+void drop_clusterbomb(edict_t *shooter, vec3_t start, vec3_t aimdir);
+void drop_rocket_bomb(edict_t *shooter, vec3_t start, vec3_t dir, int damage,int speed);
 
 void weapon_grenade_fire (edict_t *ent, qboolean held);
 
 
-//Removing static
+// Removing static so grapple location can persist between calls
 /* static */ void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result)
 {
 	vec3_t	_distance;
@@ -1426,5 +1429,122 @@ void Weapon_BFG (edict_t *ent)
 	Weapon_Generic (ent, 8, 32, 55, 58, pause_frames, fire_frames, weapon_bfg_fire);
 }
 
+void launch_airstrike_salvo(edict_t *ent, int strike_type) {
 
-//======================================================================
+	vec3_t start={0,0,0},targetdir={0,0,0},zvec={0,0,0};
+	int i;
+
+	VectorCopy(ENTS_AIRSTRIKE_START, start);
+	VectorCopy(ENTS_AIRSTRIKE_TARGETDIR, targetdir);
+
+	switch (strike_type) {
+
+		case CLUSTER_BOMBS:
+			for (i=1;i<=10;i++){
+				drop_clusterbomb(ent, start, targetdir);
+			}
+		break;
+
+	case ROCKET_BOMBS:
+		drop_rocket_bomb(ent, start, targetdir, 400, 250);
+		drop_rocket_bomb(ent, start, targetdir, 500, 450);
+		drop_rocket_bomb(ent, start, targetdir, 600, 150);
+		drop_rocket_bomb(ent, start, targetdir, 700, 210);
+		drop_rocket_bomb(ent, start, targetdir, 800, 430);
+		drop_rocket_bomb(ent, start, targetdir, 800, 330);
+	break;
+
+	case BFG_NUKE:
+		fire_bfg(ent, start, targetdir, 200, 400, 1000);
+	break;
+
+	} 
+
+	// Clear out the airstrike positioning vectors.
+	VectorCopy(zvec, ENTS_AIRSTRIKE_START);
+	VectorCopy(zvec, ENTS_AIRSTRIKE_TARGETDIR);
+
+	ENT_CALLED_AIRSTRIKE=false;
+}
+
+//=====================================================
+void craft_touch(edict_t *craft, edict_t *other, cplane_t *plane, csurface_t *surf){
+	G_FreeEdict(craft);
+}
+
+//======================================================
+//============ Airstrike 'AirCraft' Routine ============
+//======================================================
+void spawn_aircraft(edict_t *ent) {
+vec3_t start={0,0,0}, dir={0,1,0};
+edict_t *craft=NULL;
+
+VectorCopy(ENTS_AIRSTRIKE_START, start);
+
+craft=G_Spawn(); // Spawn Craft Entity
+craft->classname="aircraft";
+VectorCopy(start, craft->s.origin);
+VectorCopy(dir, craft->movedir); // Craft Move direction
+vectoangles(dir, craft->s.angles); // Vector angle of direction
+craft->velocity[0]=0;
+craft->velocity[1]=120; // pretty slow velocity...
+craft->velocity[2]=0;
+craft->clipmask=MASK_SHOT;
+craft->movetype=MOVETYPE_FLYMISSILE;// Movetype = FLY
+craft->solid=SOLID_BBOX; // Craft Body Box
+VectorClear(craft->mins); // Must Clear these out
+VectorClear(craft->maxs); // Must Clear these out.
+craft->s.modelindex=gi.modelindex(STROGG_SHIP_MODEL);
+craft->owner=ent;
+craft->takedamage=DAMAGE_YES;
+craft->touch=craft_touch;
+craft->nextthink=PRESENT_TIME+30;
+craft->think=G_FreeEdict;
+gi.linkentity(craft);
+
+launch_airstrike_salvo(ent,ENTS_AIRSTRIKE_TYPE);
+
+gi.sound(craft, CHAN_AUTO, FLYBY1_SOUND, 0.7, ATTN_NORM, 0);
+}
+
+//======================================================
+//============ Airstrike Targeting Routine =============
+//======================================================
+void Get_Target_Position(edict_t *ent, vec3_t endpos) {
+
+	vec3_t zvec = {0,0,0};
+	vec3_t start = {0,0,0};
+	vec3_t forward = {0,0,0};
+	vec3_t endpt={0,0,0};
+	vec3_t targetdir={0,0,0};
+	trace_t tr, tr_2;
+
+	// find the target's end point
+	VectorCopy(ent->s.origin, start);
+	start[2] += ENTS_VIEW_HEIGHT;
+	AngleVectors(ent->client->v_angle, forward, NULL, NULL);
+	VectorMA(start, MAX_WORLD_HEIGHT, forward, endpt);
+	tr=gi.trace(start, NULL, NULL, endpt, ent, MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA);
+
+	// find the direction from the entry point to the target
+	VectorSubtract(tr.endpos, endpos, targetdir);
+	VectorNormalize(targetdir);
+	VectorAdd(endpos, targetdir, start);
+
+	tr_2 = gi.trace(start, NULL, NULL, tr.endpos, ent,
+	MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA);
+
+	// Check for line of fire
+	if (gi.pointcontents(start) == CONTENTS_SOLID || tr_2.fraction < 1.0) {
+
+		// Clear out the airstrike positioning vectors.
+		ENT_CALLED_AIRSTRIKE=false; // Call off airstrike..
+		gi.cprintf(ent, PRINT_HIGH, "No Line-Of-Fire to Target!!\n");
+		gi.sound(ent, CHAN_ITEM, PILOT1_SOUND, 0.8, ATTN_NORM, 0);
+	return; 
+	}
+
+	// Clear path to target - prepare for Airstrike.
+	VectorCopy(start, ENTS_AIRSTRIKE_START);
+	VectorCopy(targetdir, ENTS_AIRSTRIKE_TARGETDIR);
+}

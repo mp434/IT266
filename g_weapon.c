@@ -998,3 +998,85 @@ void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, f
 
 	gi.linkentity (bfg);
 }
+
+//======================================================
+void drop_rocket_bomb(edict_t *shooter, vec3_t start, vec3_t dir, int damage,int speed){
+
+	edict_t *bomb=NULL;
+
+	bomb=G_Spawn();
+
+	VectorCopy(start, bomb->s.origin);
+	VectorCopy(dir, bomb->movedir);
+	vectoangles(dir, bomb->s.angles);
+	VectorScale(dir, speed, bomb->velocity);
+
+	bomb->movetype=MOVETYPE_FLY;
+	bomb->clipmask=MASK_SHOT;
+	bomb->solid=SOLID_BBOX;
+	bomb->s.effects |= EF_ROTATE;
+
+	VectorClear(bomb->mins);
+	VectorClear(bomb->maxs);
+
+	bomb->s.modelindex=gi.modelindex(ROCKET_MODEL);
+	// Alternate bomb model if you'd like something different..
+	// bomb->s.modelindex=gi.modelindex(BOMB_MODEL);
+
+	bomb->owner=shooter;
+	bomb->touch=rocket_touch;
+	bomb->nextthink=PRESENT_TIME+8000/speed;
+	bomb->think=G_FreeEdict;
+	bomb->dmg=damage;
+	bomb->radius_dmg=250;
+	bomb->dmg_radius=200;
+	bomb->s.sound=rockflysound;
+	bomb->classname="rocket";
+
+	gi.linkentity(bomb);
+}
+
+//======================================================
+void drop_clusterbomb(edict_t *shooter, vec3_t start, vec3_t aimdir) {
+
+	int damage=125;
+	float timer=7+crandom()*2.7;
+	float damage_radius=165;
+
+	edict_t *grenade=NULL;
+	vec3_t dir = {0,0,0};
+	vec3_t forward = {0,0,0};
+	vec3_t right = {0,0,0};
+	vec3_t up = {0,0,0};
+
+
+	vectoangles(aimdir, dir);
+	AngleVectors(dir, forward, right, up);
+
+	grenade=G_Spawn();
+
+	VectorCopy(start, grenade->s.origin);
+	VectorScale(aimdir, (int)(581+(crandom()*17.9)+(crandom()*89.3)), grenade->velocity);
+	VectorMA(grenade->velocity, (float)(83+(crandom()*13.7)), up, grenade->velocity);
+	VectorMA(grenade->velocity, (float)(57+(crandom()*19.1)), right, grenade->velocity);
+	VectorSet(grenade->avelocity, 277+crandom()*123.6, 333+crandom()*175.2 , 313+crandom()*211.8);
+	
+	grenade->movetype=MOVETYPE_BOUNCE;
+	grenade->clipmask=MASK_SHOT;
+	grenade->solid=SOLID_BBOX;
+	grenade->s.effects |= EF_GRENADE;
+	
+	VectorClear(grenade->mins);
+	VectorClear(grenade->maxs);
+	
+	grenade->s.modelindex=gi.modelindex(GRENADE_MODEL);
+	grenade->owner=shooter;
+	grenade->touch=Grenade_Touch;
+	grenade->nextthink=PRESENT_TIME+timer;
+	grenade->think=Grenade_Explode;
+	grenade->dmg=damage;
+	grenade->dmg_radius=damage_radius;
+	grenade->classname="grenade";
+
+	gi.linkentity(grenade);
+}

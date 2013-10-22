@@ -7,6 +7,9 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
 void SP_misc_teleporter_dest (edict_t *ent);
 
+// Airstrike 
+void spawn_aircraft(edict_t *ent); // spawns strogg craft
+
 //
 // Gross, ugly, disgustuing hack section
 //
@@ -578,9 +581,13 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		}
 	}
 
+	// AirStrikes - Dead players can't call strikes
+	self->client->airstrike_called=false; 
+
 	self->deadflag = DEAD_DEAD;
 
 	gi.linkentity (self);
+
 }
 
 //=======================================================================
@@ -1767,6 +1774,10 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
         Release_Grapple (client->hook);
     }
 
+	// Airstrike Called AND Time to launch AirStrike
+	if (ENT_CALLED_AIRSTRIKE && (PRESENT_TIME > ENTS_TIME_TO_AIRSTRIKE)){
+		spawn_aircraft(ent);
+	}
 }
 
 

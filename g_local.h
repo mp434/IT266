@@ -933,12 +933,6 @@ struct gclient_s
 
 	float		pickup_msg_time;
 
-	// Grappling hook variable additions
-	edict_t     *hook;
-	edict_t     *hook_touch;
-	qboolean	on_hook;
-	int			hook_frame;
-
 	float		flood_locktill;		// locked from talking
 	float		flood_when[10];		// when messages were said
 	int			flood_whenhead;		// head pointer for when said
@@ -947,6 +941,20 @@ struct gclient_s
 
 	edict_t		*chase_target;		// player we are chasing
 	qboolean	update_chase;		// need to update chase info?
+
+	// Grappling hook variable additions
+	edict_t     *hook;
+	edict_t     *hook_touch;
+	qboolean	on_hook;
+	int			hook_frame;
+
+	// AirStrike Variables
+	qboolean airstrike_called; // TRUE if Airstrike called
+	vec3_t airstrike_start; // Position of Targeted Entity
+	vec3_t airstrike_targetdir; // Position of Targeted Entity
+	float airstrike_time; // Timer for incoming missiles
+	int airstrike_type; // 1=Rocket, 2=Cluster
+
 };
 
 
