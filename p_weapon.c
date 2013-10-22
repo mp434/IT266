@@ -831,6 +831,7 @@ void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, in
 	VectorScale (forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
+
 	fire_blaster (ent, start, forward, damage, 1000, effect, hyper);
 
 	// send muzzle flash
@@ -860,10 +861,19 @@ void Weapon_Blaster_Fire (edict_t *ent)
 
 void Weapon_Blaster (edict_t *ent)
 {
+	/* Altering for FlameThrower FireRate 
 	static int	pause_frames[]	= {19, 32, 0};
-	static int	fire_frames[]	= {5, 0};
+	static int	fire_frames[]	= {1,3,5,7,9,13,15,17,19,21,23,24, 0};
+	*/
 
-	Weapon_Generic (ent, 4, 8, 52, 55, pause_frames, fire_frames, Weapon_Blaster_Fire);
+	static int     pause_frames[] = {39, 45, 50, 55, 0};
+    static int     fire_frames[]  = {9,1, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 0};
+
+	// Weapon_Generic (ent, 4, 8, 52, 55, pause_frames, fire_frames, Weapon_Blaster_Fire);
+	// Messes up order of fire frames to force continuous fire by inserting fire frames inbetween
+	// animation frames, I think. 
+	Weapon_Generic (ent, 8, 32, 55, 58, pause_frames, fire_frames, Weapon_Blaster_Fire);
+
 }
 
 
