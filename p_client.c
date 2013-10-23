@@ -1576,6 +1576,18 @@ This will be called once for each client frame, which will
 usually be a couple times for each server frame.
 ==============
 */
+
+// Don't mind this here used for double jump
+
+void Float_ModVelocity (edict_t *ent, float x, float y, float z){
+	  vec3_t tempvec;
+	  
+	  //adds vertical veloctity to current velocity the fancy shmancy way
+	  VectorSet(tempvec, x, y, z);
+	  VectorAdd(ent->velocity, tempvec, ent->velocity);
+}
+
+//===========================================
 void ClientThink (edict_t *ent, usercmd_t *ucmd)
 {
 	gclient_t	*client;
@@ -1673,6 +1685,25 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		client->resp.cmd_angles[0] = SHORT2ANGLE(ucmd->angles[0]);
 		client->resp.cmd_angles[1] = SHORT2ANGLE(ucmd->angles[1]);
 		client->resp.cmd_angles[2] = SHORT2ANGLE(ucmd->angles[2]);
+
+
+		// Double Jump modifications
+		// If im not on ground and pressing jump and have double jump on JUMP!
+
+		// testing boolean
+		ent->dbljump = true;
+
+		if (!ent->groundentity && ent->dbljump && ucmd->upmove > 10){
+			 // Set jump height manually for now
+			 Float_ModVelocity(ent, 0, 0, 40);
+			
+			 //The sound is super annoying
+			 //gi.sound(ent, CHAN_VOICE, gi.soundindex("*jump1.wav"), 1, ATTN_NORM, 0);
+			 //PlayerNoise(ent, ent->s.origin, PNOISE_SELF);
+		}
+
+
+		//=======================================================
 
 		if (ent->groundentity && !pm.groundentity && (pm.cmd.upmove >= 10) && (pm.waterlevel == 0))
 		{

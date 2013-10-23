@@ -1114,5 +1114,7 @@ struct edict_s
 
 	//Rocket counter
 	//int rocketGen;
+
+	qboolean   dbljump;
 };
 
