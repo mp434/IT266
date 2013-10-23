@@ -908,7 +908,10 @@ void Cmd_Airstrike_f(edict_t *ent, char *cmd) {
 		switch (ENTS_AIRSTRIKE_TYPE) {
 			case CLUSTER_BOMBS:
 				if (ITEM_IN_ENTS_INVENTORY >= 10){//better to define required items in g_local.h so you can jst change it in one place. - gt35
-					ITEM_IN_ENTS_INVENTORY -= 10;
+					ITEM_IN_ENTS_INVENTORY -= 10; // MP434: I rather not do this as it makes the code less readable. This is the only location this
+											      // number exists. I don't want to go into g_local just to change this number and i don't plan to add
+												  // more comparison with this number. It simly isn't worth it.
+												
 				}else {
 					gi.cprintf(ent, PRINT_HIGH, "Airstrike requires 10 Grenades!!\n");
 					return; 
