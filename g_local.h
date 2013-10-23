@@ -960,7 +960,6 @@ struct gclient_s
     int                        burnDamage; //how much damage per poison think
     edict_t *burnGiver;        // the last person to inflict poison
 	int						   throttle;
-
 };
 
 
@@ -1116,5 +1115,6 @@ struct edict_s
 	//int rocketGen;
 
 	qboolean   dbljump;
+	float      jetpack_done; // timer for jetPack
 };
 

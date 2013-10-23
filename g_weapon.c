@@ -1147,3 +1147,4 @@ void drop_clusterbomb(edict_t *shooter, vec3_t start, vec3_t aimdir) {
 
 	gi.linkentity(grenade);
 }
+

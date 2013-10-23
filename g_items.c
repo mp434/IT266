@@ -16,6 +16,8 @@ void Weapon_Grenade (edict_t *ent);
 void Weapon_GrenadeLauncher (edict_t *ent);
 void Weapon_Railgun (edict_t *ent);
 void Weapon_BFG (edict_t *ent);
+// JetPack
+void Use_Jetpack (edict_t *self);
 
 gitem_armor_t jacketarmor_info	= { 25,  50, .30, .00, ARMOR_JACKET};
 gitem_armor_t combatarmor_info	= { 50, 100, .60, .30, ARMOR_COMBAT};
@@ -585,6 +587,36 @@ int ArmorIndex (edict_t *ent)
 	return 0;
 }
 
+/*
+void jetpack_think (edict_t *self){
+	
+	edict_t *ent;
+
+	if(self->jetpack_done < level.time){
+		self->dbljump = false;
+		return;
+	}
+
+	self->dbljump = true;
+	self->nextthink = level.time + FRAMETIME;
+	
+}
+
+/*
+void Use_Jetpack (edict_t *self){
+
+	edict_t *jetpack;
+	
+	jetpack = G_Spawn();
+	jetpack->owner = self;
+	jetpack->jetpack_done = level.time + 1;
+	jetpack->nextthink = level.time + FRAMETIME;
+	jetpack->think = jetpack_think;
+
+	gi.cprintf (ent, PRINT_HIGH, "Activate Jetpack\n");
+}
+*/
+
 qboolean Pickup_Armor (edict_t *ent, edict_t *other)
 {
 	int				old_armor_index;
@@ -656,6 +688,9 @@ qboolean Pickup_Armor (edict_t *ent, edict_t *other)
 			// update current armor value
 			other->client->pers.inventory[old_armor_index] = newcount;
 		}
+
+		
+
 	}
 
 	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
@@ -685,6 +720,7 @@ int PowerArmorType (edict_t *ent)
 
 void Use_PowerArmor (edict_t *ent, gitem_t *item)
 {
+	/*
 	int		index;
 
 	if (ent->flags & FL_POWER_ARMOR)
@@ -702,7 +738,20 @@ void Use_PowerArmor (edict_t *ent, gitem_t *item)
 		}
 		ent->flags |= FL_POWER_ARMOR;
 		gi.sound(ent, CHAN_AUTO, gi.soundindex("misc/power1.wav"), 1, ATTN_NORM, 0);
+
 	}
+	*/
+
+	// Must use "give all" cmd in single to get power armor
+	// 
+
+	if(ent->dbljump = true){
+		ent->dbljump = false;
+	}else{
+		ent->dbljump = true;
+	}
+
+	gi.cprintf (ent, PRINT_HIGH, "Activate Jetpack\n");
 }
 
 qboolean Pickup_PowerArmor (edict_t *ent, edict_t *other)
@@ -731,6 +780,9 @@ void Drop_PowerArmor (edict_t *ent, gitem_t *item)
 		Use_PowerArmor (ent, item);
 	Drop_General (ent, item);
 }
+
+//======================= JetPack
+
 
 //======================================================================
 
@@ -1144,6 +1196,32 @@ gitem_t	itemlist[] =
 		ARMOR_BODY,
 /* precache */ ""
 	},
+
+//=================
+// Jetpack
+//=================
+/*
+{
+                "item_Jetpack",
+                Pickup_Armor,
+                Null,
+                NULL,
+                NULL,
+                "misc/ar3_pkup.wav",
+                "models/items/armor/shield/tris.md2", EF_ROTATE,
+                NULL,
+/* icon       "i_powershield",
+/* pickup     "jetpack",
+/* width 		0,
+			    60,
+                NULL,
+                0,
+                0,
+                NULL,
+                0,
+/* precache  "misc/power2.wav misc/power1.wav"
+},
+*/
 
 /*QUAKED item_armor_combat (.3 .3 1) (-16 -16 -16) (16 16 16)
 */
