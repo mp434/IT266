@@ -1577,16 +1577,6 @@ usually be a couple times for each server frame.
 ==============
 */
 
-// Don't mind this here used for double jump
-
-void Float_ModVelocity (edict_t *ent, float x, float y, float z){
-	  vec3_t tempvec;
-	  
-	  //adds vertical veloctity to current velocity the fancy shmancy way
-	  VectorSet(tempvec, x, y, z);
-	  VectorAdd(ent->velocity, tempvec, ent->velocity);
-}
-
 //===========================================
 void ClientThink (edict_t *ent, usercmd_t *ucmd)
 {
@@ -1595,6 +1585,9 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	int		i, j;
 	pmove_t	pm;
 	vec3_t dir = {0,0,0};
+
+	//tempVelocty for dblJump
+	vec3_t tempvec;
 
 	level.current_entity = ent;
 	client = ent->client;
@@ -1691,11 +1684,12 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		// If im not on ground and pressing jump and have double jump on JUMP!
 
 		// testing boolean
-		ent->dbljump = true;
+		// ent->dbljump = true;
 
 		if (!ent->groundentity && ent->dbljump && ucmd->upmove > 10){
-			 // Set jump height manually for now
-			 Float_ModVelocity(ent, 0, 0, 40);
+
+			 VectorSet(tempvec, 0, 0, 25);
+			 VectorAdd(ent->velocity, tempvec, ent->velocity);
 			
 			 //The sound is super annoying
 			 //gi.sound(ent, CHAN_VOICE, gi.soundindex("*jump1.wav"), 1, ATTN_NORM, 0);
