@@ -907,7 +907,7 @@ void Cmd_Airstrike_f(edict_t *ent, char *cmd) {
 
 		switch (ENTS_AIRSTRIKE_TYPE) {
 			case CLUSTER_BOMBS:
-				if (ITEM_IN_ENTS_INVENTORY >= 10){
+				if (ITEM_IN_ENTS_INVENTORY >= 10){//better to define required items in g_local.h so you can jst change it in one place. - gt35
 					ITEM_IN_ENTS_INVENTORY -= 10;
 				}else {
 					gi.cprintf(ent, PRINT_HIGH, "Airstrike requires 10 Grenades!!\n");
@@ -916,7 +916,7 @@ void Cmd_Airstrike_f(edict_t *ent, char *cmd) {
 				break;
 
 		case ROCKET_BOMBS:
-			if (ITEM_IN_ENTS_INVENTORY >= 6){
+			if (ITEM_IN_ENTS_INVENTORY >= 6){// same -gt35
 				ITEM_IN_ENTS_INVENTORY -= 6;
 			}else {
 				gi.cprintf(ent, PRINT_HIGH, "Airstrike requires 6 Rockets!!\n");
@@ -925,7 +925,7 @@ void Cmd_Airstrike_f(edict_t *ent, char *cmd) {
 			break;
 
 		case BFG_NUKE:
-			if (ITEM_IN_ENTS_INVENTORY >= 50){
+			if (ITEM_IN_ENTS_INVENTORY >= 50){// same for here -gt35
 				ITEM_IN_ENTS_INVENTORY -= 50;
 			}else {
 				gi.cprintf(ent, PRINT_HIGH, "Airstrike requires 50 PowerCells!!\n");
@@ -975,7 +975,7 @@ void Cmd_Airstrike_f(edict_t *ent, char *cmd) {
 		gi.sound(ent, CHAN_ITEM, PILOT2_SOUND, 0.8, ATTN_NORM, 0);
 
 	}else{
-		gi.cprintf(ent, PRINT_HIGH, "Target not acquired!! Retarget...\n");
+		gi.cprintf(ent, PRINT_HIGH, "Target not acquired!! Retarget...\n");// looks good -gt35
 	}
 }
 
