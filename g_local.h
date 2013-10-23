@@ -959,7 +959,7 @@ struct gclient_s
 	int                        burnAmmount;        //how much poison in system
     int                        burnDamage; //how much damage per poison think
     edict_t *burnGiver;        // the last person to inflict poison
-	int						   throttle;
+	int						   throttle;//cool feature - gt35
 
 };
 
